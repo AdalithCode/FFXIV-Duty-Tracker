@@ -75,8 +75,15 @@ namespace MentorRouletteTracker
 
             RefreshAverage(duty);
 
+            var runCountText = $"Based on {cachedRunCount} full runs";
+            var closeWidth = ImGui.CalcTextSize("×").X + ImGui.GetStyle().FramePadding.X * 2;
+            var headerWidth = Math.Max(180f, Math.Max(ImGui.CalcTextSize(runCountText).X,
+                ImGui.CalcTextSize("Average clear time:").X));
+            headerWidth = Math.Max(headerWidth,
+                ImGui.CalcTextSize(duty.DutyName).X + ImGui.GetStyle().ItemSpacing.X + closeWidth);
+            var headerStart = ImGui.GetCursorPosX();
             ImGui.TextUnformatted(duty.DutyName);
-            ImGui.SameLine();
+            ImGui.SameLine(headerStart + headerWidth - closeWidth);
             ImGui.PushStyleColor(ImGuiCol.Button, Vector4.Zero);
             ImGui.PushStyleColor(ImGuiCol.Text, ImGui.GetStyle().Colors[(int)ImGuiCol.TextDisabled]);
             try
@@ -104,7 +111,7 @@ namespace MentorRouletteTracker
                 ImGui.SetTooltip("Click to view the full runs used for this average");
             }
 
-            ImGui.TextDisabled($"Based on {cachedRunCount} full runs");
+            ImGui.TextDisabled(runCountText);
         }
 
         internal static bool IsFullRunForDuty(DutyRecord record, string dutyName) =>
